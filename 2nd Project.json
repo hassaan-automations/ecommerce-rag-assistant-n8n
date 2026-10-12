@@ -1,0 +1,329 @@
+{
+  "name": "2nd Project",
+  "nodes": [
+    {
+      "parameters": {
+        "mode": "insert",
+        "tableName": {
+          "__rl": true,
+          "value": "documents",
+          "mode": "list",
+          "cachedResultName": "documents"
+        },
+        "options": {
+          "queryName": "match_documents"
+        }
+      },
+      "type": "@n8n/n8n-nodes-langchain.vectorStoreSupabase",
+      "typeVersion": 1.3,
+      "position": [
+        384,
+        -64
+      ],
+      "id": "d9251268-04c3-482d-a7b1-c90a27c149f9",
+      "name": "Supabase Vector Store",
+      "credentials": {
+        "supabaseApi": {
+          "id": "6n8Is21aDUmY5snK",
+          "name": "Supabase account 2"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "pollTimes": {
+          "item": [
+            {
+              "mode": "everyMinute"
+            }
+          ]
+        },
+        "triggerOn": "specificFolder",
+        "folderToWatch": {
+          "__rl": true,
+          "value": "1NPBmP4a-6iH7W3irtLisGLh5qAhWh6Wy",
+          "mode": "list",
+          "cachedResultName": "AI Roadmap",
+          "cachedResultUrl": "https://drive.google.com/drive/folders/1NPBmP4a-6iH7W3irtLisGLh5qAhWh6Wy"
+        },
+        "event": "fileCreated",
+        "options": {}
+      },
+      "type": "n8n-nodes-base.googleDriveTrigger",
+      "typeVersion": 1,
+      "position": [
+        0,
+        0
+      ],
+      "id": "a4ec968f-f450-419a-a987-7983827a4283",
+      "name": "Google Drive Trigger",
+      "credentials": {
+        "googleDriveOAuth2Api": {
+          "id": "9Kz6mNe2yWDs2pTj",
+          "name": "Google Drive account"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "operation": "download",
+        "fileId": {
+          "__rl": true,
+          "value": "={{ $json.id }}",
+          "mode": "id"
+        },
+        "options": {}
+      },
+      "type": "n8n-nodes-base.googleDrive",
+      "typeVersion": 3,
+      "position": [
+        224,
+        0
+      ],
+      "id": "81931b34-80ff-44bf-8dc0-355a6b238d39",
+      "name": "Download file",
+      "credentials": {
+        "googleDriveOAuth2Api": {
+          "id": "9Kz6mNe2yWDs2pTj",
+          "name": "Google Drive account"
+        }
+      }
+    },
+    {
+      "parameters": {},
+      "type": "@n8n/n8n-nodes-langchain.embeddingsGoogleGemini",
+      "typeVersion": 1,
+      "position": [
+        352,
+        128
+      ],
+      "id": "9191899e-caf1-4766-9329-2ef44364216a",
+      "name": "Embeddings Google Gemini",
+      "credentials": {
+        "googlePalmApi": {
+          "id": "0Kvs7IHZq2RKwbMt",
+          "name": "Google Gemini(PaLM) Api account"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "dataType": "binary",
+        "options": {}
+      },
+      "type": "@n8n/n8n-nodes-langchain.documentDefaultDataLoader",
+      "typeVersion": 1.1,
+      "position": [
+        528,
+        144
+      ],
+      "id": "48768d1a-cb26-49c3-beec-0ded11ad5749",
+      "name": "Default Data Loader"
+    },
+    {
+      "parameters": {
+        "options": {
+          "systemMessage": "You are the official Customer Support Policy AI Assistant for Velocity Retail.\nYour task is to provide accurate, concise, and helpful answers to customer questions exclusively using the information retrieved from the policy vector store.\n\nSTRICT OPERATIONAL RULES:\n1. Grounding Only: Answer questions using ONLY the retrieved context. Never assume, extrapolate, or invent policies that are not explicitly stated.\n2. Handling Missing Information: If the customer's question cannot be answered using the provided context, state politely:\n   \"Yeh maloomat hamari mojooda policy mein darj nahi hain. Mazeed rehnumai ke liye hamari live support team se support@velocityretail.com par rabta karein.\"\n   Do NOT provide an educated guess.\n3. Tone: Professional, courteous, and clear Roman Urdu or English (match the customer's input language).\n4. Mandatory Citation: At the very end of your response, add a source reference tag citing the exact section from the document. Example:\n   [Hawala: Section 2 - Return, Exchange & Refund Policy]"
+        }
+      },
+      "type": "@n8n/n8n-nodes-langchain.agent",
+      "typeVersion": 3.1,
+      "position": [
+        336,
+        288
+      ],
+      "id": "cf60f61e-e658-4dbc-8dc9-328ee8f2caa7",
+      "name": "AI Agent"
+    },
+    {
+      "parameters": {
+        "options": {}
+      },
+      "type": "@n8n/n8n-nodes-langchain.lmChatGoogleGemini",
+      "typeVersion": 1.2,
+      "position": [
+        208,
+        496
+      ],
+      "id": "a3bf3812-cec5-4b26-814f-eee70f12bdc2",
+      "name": "Google Gemini Chat Model",
+      "credentials": {
+        "googlePalmApi": {
+          "id": "0Kvs7IHZq2RKwbMt",
+          "name": "Google Gemini(PaLM) Api account"
+        }
+      }
+    },
+    {
+      "parameters": {},
+      "type": "@n8n/n8n-nodes-langchain.memoryBufferWindow",
+      "typeVersion": 1.4,
+      "position": [
+        352,
+        496
+      ],
+      "id": "2af6b104-be8c-4d54-bec7-e2e313819418",
+      "name": "Simple Memory"
+    },
+    {
+      "parameters": {
+        "mode": "retrieve-as-tool",
+        "toolDescription": "\"Search and retrieve relevant shipping, refund, return, and payment policies for customer inquiries.\"",
+        "tableName": {
+          "__rl": true,
+          "value": "documents",
+          "mode": "list",
+          "cachedResultName": "documents"
+        },
+        "options": {}
+      },
+      "type": "@n8n/n8n-nodes-langchain.vectorStoreSupabase",
+      "typeVersion": 1.3,
+      "position": [
+        704,
+        304
+      ],
+      "id": "1e54ec14-ff49-483a-b220-8d625d70ebcb",
+      "name": "vector base",
+      "credentials": {
+        "supabaseApi": {
+          "id": "6n8Is21aDUmY5snK",
+          "name": "Supabase account 2"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "options": {}
+      },
+      "type": "@n8n/n8n-nodes-langchain.chatTrigger",
+      "typeVersion": 1.5,
+      "position": [
+        144,
+        304
+      ],
+      "id": "baaf1978-7864-40aa-9857-fdf602e8fa30",
+      "name": "When chat message received",
+      "webhookId": "04e8d758-e6aa-4175-9265-2b6338efea2a"
+    }
+  ],
+  "pinData": {},
+  "connections": {
+    "Google Drive Trigger": {
+      "main": [
+        [
+          {
+            "node": "Download file",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Download file": {
+      "main": [
+        [
+          {
+            "node": "Supabase Vector Store",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Embeddings Google Gemini": {
+      "ai_embedding": [
+        [
+          {
+            "node": "Supabase Vector Store",
+            "type": "ai_embedding",
+            "index": 0
+          },
+          {
+            "node": "vector base",
+            "type": "ai_embedding",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Default Data Loader": {
+      "ai_document": [
+        [
+          {
+            "node": "Supabase Vector Store",
+            "type": "ai_document",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Supabase Vector Store": {
+      "main": [
+        []
+      ]
+    },
+    "AI Agent": {
+      "main": [
+        []
+      ]
+    },
+    "Google Gemini Chat Model": {
+      "ai_languageModel": [
+        [
+          {
+            "node": "AI Agent",
+            "type": "ai_languageModel",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Simple Memory": {
+      "ai_memory": [
+        [
+          {
+            "node": "AI Agent",
+            "type": "ai_memory",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "vector base": {
+      "ai_tool": [
+        [
+          {
+            "node": "AI Agent",
+            "type": "ai_tool",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "When chat message received": {
+      "main": [
+        [
+          {
+            "node": "AI Agent",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    }
+  },
+  "active": false,
+  "settings": {
+    "executionOrder": "v1",
+    "binaryMode": "separate"
+  },
+  "versionId": "261bbbc5-1926-4c9e-93f7-9d77537508fb",
+  "meta": {
+    "templateCredsSetupCompleted": true,
+    "instanceId": "89b61708f89b675f91f092826f771b2a9df959b289fbb17effa5c605a4649b68"
+  },
+  "nodeGroups": [],
+  "id": "f493SK6oYD5xtAkr",
+  "tags": []
+}
