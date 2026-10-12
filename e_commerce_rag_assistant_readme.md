@@ -156,5 +156,5 @@ The system has been evaluated against core e-commerce operational scenarios:
 ---
 
 ## Author
-- **Portfolio / Project:** 6-Month AI Automation Engineering Roadmap (Month 3, Project 2)
+    HASSAAN AZIZ
 - **Role:** AI Automation Engineer (n8n, Python, LLM & RAG Systems)
